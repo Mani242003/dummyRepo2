@@ -1,41 +1,17 @@
-name: frontend-build-deploy-dispatch
+name: frontend-build-deploy
 
 on:
   workflow_dispatch:
     inputs:
-      relordev:
+      version:
         required: true
-        default: Development
-      relno:
-        required: true
-        default: "26.43"
-      branchName:
-        required: true
-        default: develop
-      buildimage:
-        required: true
-        default: Y
-      uploadimage:
-        required: true
-        default: Y
-      environment:
-        required: true
-        default: sit1
+        default: "1.0.0"
       ocptoken:
         required: true
-      projectName:
-        required: true
-        default: cmomobile-sit01
 
 jobs:
   call:
     uses: ./.github/workflows/frontend-build-deploy.yml
     with:
-      relordev: ${{ inputs.relordev }}
-      relno: ${{ inputs.relno }}
-      branchName: ${{ inputs.branchName }}
-      buildimage: ${{ inputs.buildimage }}
-      uploadimage: ${{ inputs.uploadimage }}
-      environment: ${{ inputs.environment }}
+      version: ${{ inputs.version }}
       ocptoken: ${{ inputs.ocptoken }}
-      projectName: ${{ inputs.projectName }}
