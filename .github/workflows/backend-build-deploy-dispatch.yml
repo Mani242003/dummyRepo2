@@ -1,62 +1,17 @@
-name: backend-build-deploy-dispatch
+name: backend-build-deploy
 
 on:
   workflow_dispatch:
     inputs:
-      relordev:
-        description: 'Release or Development'
+      version:
         required: true
-        default: Development
-
-      relno:
-        description: 'Release No'
-        required: true
-        default: "26.43"
-
-      branchName:
-        description: 'Branch Name'
-        required: true
-        default: develop
-
-      buildimage:
-        description: 'Build Image'
-        required: true
-        default: Y
-
-      uploadimage:
-        description: 'Upload Image'
-        required: true
-        default: Y
-
-      environment:
-        description: 'Environment'
-        required: true
-        default: sit1
-
+        default: "1.0.0"
       ocptoken:
-        description: 'Token for ARO'
         required: true
-
-      projectName:
-        description: 'Project Name'
-        required: true
-        default: cmomobile-sit01
-
-      runner:
-        description: 'Runner'
-        required: true
-        default: enterprise
 
 jobs:
   call:
     uses: ./.github/workflows/backend-build-deploy.yml
     with:
-      relordev: ${{ inputs.relordev }}
-      relno: ${{ inputs.relno }}
-      branchName: ${{ inputs.branchName }}
-      buildimage: ${{ inputs.buildimage }}
-      uploadimage: ${{ inputs.uploadimage }}
-      environment: ${{ inputs.environment }}
+      version: ${{ inputs.version }}
       ocptoken: ${{ inputs.ocptoken }}
-      projectName: ${{ inputs.projectName }}
-      runner: ${{ inputs.runner }}
