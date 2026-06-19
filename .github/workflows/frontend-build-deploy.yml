@@ -1,0 +1,60 @@
+name: frontend-build-deploy
+
+on:
+  workflow_call:
+    inputs:
+      relordev: { type: string, required: true }
+      relno: { type: string, required: true }
+      branchName: { type: string, required: true }
+      buildimage: { type: string, required: true }
+      uploadimage: { type: string, required: true }
+      environment: { type: string, required: true }
+      ocptoken: { type: string, required: true }
+      projectName: { type: string, required: true }
+
+jobs:
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "=== INPUT VALIDATION ==="
+          echo "Rel/Dev: ${{ inputs.relordev }}"
+          echo "Release No: ${{ inputs.relno }}"
+          echo "Branch: ${{ inputs.branchName }}"
+          echo "Environment: ${{ inputs.environment }}"
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "=== BUILD STAGE ==="
+          echo "Building frontend..."
+          echo "Build Image: ${{ inputs.buildimage }}"
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "=== DOCKER STAGE ==="
+          echo "Uploading Image: ${{ inputs.uploadimage }}"
+
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "=== DEPLOY STAGE ==="
+          echo "Project: ${{ inputs.projectName }}"
+          echo "Token: ${{ inputs.ocptoken }}"
+          echo "Environment: ${{ inputs.environment }}"
+
+  restart:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "=== RESTART STAGE ==="
+          echo "Restarting services..."
