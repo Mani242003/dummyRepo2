@@ -1,0 +1,67 @@
+name: Backend Build Deploy Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      relordev: { type: string, required: true }
+      relno: { type: string, required: true }
+      branchName: { type: string, required: true }
+      buildimage: { type: string, required: true }
+      uploadimage: { type: string, required: true }
+      environment: { type: string, required: true }
+      ocptoken: { type: string, required: true }
+      projectName: { type: string, required: true }
+      runner: { type: string, required: true }
+
+jobs:
+
+  validate:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Validate Inputs
+        run: |
+          echo "=== BACKEND BUILD + DEPLOY ==="
+          echo "relordev: ${{ inputs.relordev }}"
+          echo "relno: ${{ inputs.relno }}"
+          echo "branchName: ${{ inputs.branchName }}"
+          echo "environment: ${{ inputs.environment }}"
+
+  build-jar:
+    needs: validate
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Build JAR
+        run: |
+          echo "=== BUILD JAR ==="
+          echo "Simulating JAR build..."
+
+  docker:
+    needs: build-jar
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Build Docker Image
+        run: |
+          echo "=== DOCKER BUILD ==="
+          echo "Upload Image: ${{ inputs.uploadimage }}"
+
+  deploy:
+    needs: docker
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Deploy Backend
+        run: |
+          echo "=== DEPLOY ==="
+          echo "Project: ${{ inputs.projectName }}"
+          echo "Environment: ${{ inputs.environment }}"
+          echo "Token: ${{ inputs.ocptoken }}"
+          echo "Patching imagestream..."
+          echo "Deploying to OpenShift..."
+
+  restart:
+    needs: deploy
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Restart Backend
+        run: |
+          echo "=== RESTART ==="
+          echo "Restarting backend pods..."
